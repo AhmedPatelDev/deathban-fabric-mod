@@ -42,7 +42,13 @@ public class DeathbanEventHandler {
             long remainingBanTime = DeathbanBanManager.getRemainingBanTime(player);
             if (remainingBanTime > 0) {
                 String formattedTime = formatTime(remainingBanTime);
-                player.networkHandler.disconnect(Text.literal("You are banned for " + formattedTime + " due to a recent death!"));
+
+                // Schedule a kick to fix the "fake disconnect" issue.
+                DeathbanTaskScheduler.scheduleTask(() -> {
+                    if (player.networkHandler != null && !player.isDisconnected()) {
+                        player.networkHandler.disconnect(Text.literal("You are banned for " + formattedTime + " due to a recent death!"));
+                    }
+                }, 40); // 40 ticks = 2 seconds (should be enough time for the server to register that the player has connected.)
             }
 
         });
