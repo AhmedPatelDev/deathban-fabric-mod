@@ -8,11 +8,6 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.UserCache;
-import com.mojang.authlib.GameProfile;
-
-import java.util.Optional;
 import java.util.UUID;
 
 public class DeathbanCommands {
@@ -44,17 +39,6 @@ public class DeathbanCommands {
         );
     }
 
-    private static UUID getOfflinePlayerUUID(ServerCommandSource source, String username) {
-        MinecraftServer server = source.getServer();
-        UserCache userCache = server.getUserCache();
-
-        // Retrieve the GameProfile from the user cache using the username
-        Optional<GameProfile> profileOptional = userCache.findByName(username);
-
-        // If a profile is found, return the UUID; otherwise, return null
-        return profileOptional.map(GameProfile::getId).orElse(null);
-    }
-
     private static int banPlayer(ServerCommandSource source, String username, int hours) {
         ServerPlayerEntity player = source.getServer().getPlayerManager().getPlayer(username);
 
@@ -62,7 +46,7 @@ public class DeathbanCommands {
 
         // If the player doesn't exist in the server
         if(player == null) {
-            UUID playerID = getOfflinePlayerUUID(source, username);
+            UUID playerID = DeathbanUtils.getOfflinePlayerUUID(source, username);
 
             // Player has never joined the server
             if(playerID == null) {
@@ -84,7 +68,7 @@ public class DeathbanCommands {
     }
 
     private static int unbanPlayer(ServerCommandSource source, String username) {
-        UUID playerID = getOfflinePlayerUUID(source, username);
+        UUID playerID = DeathbanUtils.getOfflinePlayerUUID(source, username);
         DeathbanBanManager.unbanPlayer(playerID);
         source.sendFeedback(() -> Text.literal("Unbanned " + username), false);
         return Command.SINGLE_SUCCESS;

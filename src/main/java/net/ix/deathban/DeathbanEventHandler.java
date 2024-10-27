@@ -25,7 +25,7 @@ public class DeathbanEventHandler {
 
                 // Get banned time
                 long remainingBanTime = DeathbanBanManager.getRemainingBanTime(player);
-                String formattedTime = formatTime(remainingBanTime);
+                String formattedTime = DeathbanUtils.formatTime(remainingBanTime);
 
                 // Notify the player and kick them from the server
                 player.networkHandler.disconnect(Text.literal("You died! (" + formattedTime + " remaining)"));
@@ -41,7 +41,7 @@ public class DeathbanEventHandler {
             ServerPlayerEntity player = handler.player;
             long remainingBanTime = DeathbanBanManager.getRemainingBanTime(player);
             if (remainingBanTime > 0) {
-                String formattedTime = formatTime(remainingBanTime);
+                String formattedTime = DeathbanUtils.formatTime(remainingBanTime);
 
                 // Schedule a kick to fix the "fake disconnect" issue.
                 DeathbanTaskScheduler.scheduleTask(() -> {
@@ -52,14 +52,5 @@ public class DeathbanEventHandler {
             }
 
         });
-    }
-
-    // Format time in a user-friendly way
-    public static String formatTime(long seconds) {
-        long hours = seconds / 3600;
-        long minutes = (seconds % 3600) / 60;
-        long remainingSeconds = seconds % 60;
-
-        return String.format("%d hours, %d minutes, and %d seconds", hours, minutes, remainingSeconds);
     }
 }

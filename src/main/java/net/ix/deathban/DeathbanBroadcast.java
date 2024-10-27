@@ -2,18 +2,11 @@ package net.ix.deathban;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
-
-import com.mojang.authlib.GameProfile;
-import net.minecraft.util.UserCache;
-
-import static net.ix.deathban.DeathbanEventHandler.formatTime;
 
 public class DeathbanBroadcast {
 
@@ -45,11 +38,10 @@ public class DeathbanBroadcast {
 
                 // Calculate remaining time
                 long remainingTime = banEndTime - System.currentTimeMillis() / 1000; // Convert to seconds
-                // TODO: formattime needs a better place
-                String remainingTimeString = formatTime(remainingTime);
+                String remainingTimeString = DeathbanUtils.formatTime(remainingTime);
 
                 // Get username from UUID
-                String username = getUsernameFromUUID(server, playerUUID);
+                String username = DeathbanUtils.getUsernameFromUUID(server, playerUUID);
 
                 // Broadcast the username and remaining time
                 String message = "§6§l" + username + "§r: §a" + remainingTimeString;
@@ -59,17 +51,6 @@ public class DeathbanBroadcast {
             // Reset the counter
             ticksUntilNextBroadcast = BROADCAST_INTERVAL_TICKS;
         }
-    }
-
-    // TODO: this needs a better place
-    private static String getUsernameFromUUID(MinecraftServer server, UUID playerUUID) {
-        UserCache userCache = server.getUserCache();
-
-        // Retrieve the GameProfile from the user cache using the username
-        Optional<GameProfile> profileOptional = userCache.getByUuid(playerUUID);
-
-        // If a profile is found, return the UUID; otherwise, return null
-        return profileOptional.map(GameProfile::getName).orElse(null);
     }
 
     // Broadcast a message to all players on the server
