@@ -24,7 +24,9 @@ public class Deathban implements ModInitializer {
 		DeathbanEventHandler.registerEvents();
 
 		// Register the broadcast event
-		DeathbanBroadcast.registerBroadcast();
+		if (DeathbanConfig.enableBroadcast) {
+			DeathbanBroadcast.registerBroadcast();
+		}
 
 		// Register a server tick event listener
 		ServerTickEvents.END_SERVER_TICK.register(DeathbanTaskScheduler::tick);

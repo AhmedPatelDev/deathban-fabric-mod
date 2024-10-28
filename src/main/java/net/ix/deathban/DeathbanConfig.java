@@ -14,6 +14,8 @@ public class DeathbanConfig {
 
     // Default config values
     public static long defaultBanSeconds = 129600;
+    public static boolean enableBroadcast = true;
+    public static long broadcastIntervalTicks = 12000;
 
     // Load config from file
     public static void loadConfig() {
@@ -22,6 +24,8 @@ public class DeathbanConfig {
                 ConfigData data = GSON.fromJson(reader, ConfigData.class);
                 if (data != null) {
                     defaultBanSeconds = data.defaultBanSeconds;
+                    enableBroadcast = data.enableBroadcast;
+                    broadcastIntervalTicks = data.broadcastIntervalTicks;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -37,6 +41,8 @@ public class DeathbanConfig {
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             ConfigData data = new ConfigData();
             data.defaultBanSeconds = defaultBanSeconds;
+            data.enableBroadcast = enableBroadcast;
+            data.broadcastIntervalTicks = broadcastIntervalTicks;
             GSON.toJson(data, writer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,7 +60,10 @@ public class DeathbanConfig {
             // Create and save the default config
             try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
                 ConfigData data = new ConfigData();
-                data.defaultBanSeconds = 129600; // Set the default value
+                 // Set the default value
+                data.defaultBanSeconds = 129600;
+                data.enableBroadcast = true;
+                data.broadcastIntervalTicks = 12000;
                 GSON.toJson(data, writer);
             }
         } catch (IOException e) {
@@ -65,5 +74,7 @@ public class DeathbanConfig {
     // Internal class to store config data
     private static class ConfigData {
         long defaultBanSeconds = 129600;
+        boolean enableBroadcast = true;
+        long broadcastIntervalTicks = 12000;
     }
 }

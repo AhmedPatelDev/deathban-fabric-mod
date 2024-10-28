@@ -10,9 +10,8 @@ import java.util.UUID;
 
 public class DeathbanBroadcast {
 
-    // TODO: add these to the config
-    private static final int BROADCAST_INTERVAL_TICKS = (60 * 10) * 20; // 600 seconds (10 minutes) * 20 ticks per second
-    private static int ticksUntilNextBroadcast = BROADCAST_INTERVAL_TICKS;
+    static long broadcastIntervalTicks = DeathbanConfig.broadcastIntervalTicks;
+    private static int ticksUntilNextBroadcast = broadcastIntervalTicks;
 
     // Register the server tick event for broadcasting
     public static void registerBroadcast() {
@@ -49,7 +48,7 @@ public class DeathbanBroadcast {
             }
 
             // Reset the counter
-            ticksUntilNextBroadcast = BROADCAST_INTERVAL_TICKS;
+            ticksUntilNextBroadcast = broadcastIntervalTicks;
         }
     }
 
