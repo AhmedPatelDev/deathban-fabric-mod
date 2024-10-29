@@ -11,7 +11,7 @@ import java.util.UUID;
 public class DeathbanBroadcast {
 
     static long broadcastIntervalTicks = DeathbanConfig.broadcastIntervalTicks;
-    private static int ticksUntilNextBroadcast = broadcastIntervalTicks;
+    private static long ticksUntilNextBroadcast = broadcastIntervalTicks;
 
     // Register the server tick event for broadcasting
     public static void registerBroadcast() {
