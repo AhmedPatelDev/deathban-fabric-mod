@@ -18,19 +18,19 @@ public class DeathbanBroadcast {
         ServerTickEvents.END_SERVER_TICK.register(DeathbanBroadcast::onServerTick);
     }
 
-    // TODO: Dont broadcast for each individual row, rather, concat into one broadcast
     // Called every server tick (20 times per second)
     private static void onServerTick(MinecraftServer server) {
         ticksUntilNextBroadcast--;
 
         if (ticksUntilNextBroadcast <= 0) {
-            // Broadcast the message to all players
-            broadcastMessage(server, "§k-§r §c§lList of banned players: §r§k-§r");
+            // Begin the broadcast message with the header
+            StringBuilder broadcastBuilder = new StringBuilder();
+            broadcastBuilder.append("§k-§r §c§lList of banned players: §r§k-§r\n");
 
             // Get the list of banned players
             Map<UUID, Long> bannedPlayers = DeathbanBanManager.getBannedPlayers();
 
-            // Iterate over the banned players and broadcast their usernames and remaining ban time
+            // Iterate over the banned players and add each player's info to the message
             for (Map.Entry<UUID, Long> entry : bannedPlayers.entrySet()) {
                 UUID playerUUID = entry.getKey();
                 Long banEndTime = entry.getValue();
@@ -42,10 +42,12 @@ public class DeathbanBroadcast {
                 // Get username from UUID
                 String username = DeathbanUtils.getUsernameFromUUID(server, playerUUID);
 
-                // Broadcast the username and remaining time
-                String message = "§6§l" + username + "§r: §a" + remainingTimeString;
-                broadcastMessage(server, message);
+                // Append each player's details to the message
+                broadcastBuilder.append("§6§l").append(username).append("§r: §a").append(remainingTimeString).append("\n");
             }
+
+            // Broadcast the entire message at once
+            broadcastMessage(server, broadcastBuilder.toString());
 
             // Reset the counter
             ticksUntilNextBroadcast = broadcastIntervalTicks;
